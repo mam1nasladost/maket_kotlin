@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EventCard(
-                imageRes = null,
+                imageRes = R.drawable.goblinstyle,
                 eventName = "Мероприятие",
                 onLikeClick = {},
                 onDislikeClick = {}
