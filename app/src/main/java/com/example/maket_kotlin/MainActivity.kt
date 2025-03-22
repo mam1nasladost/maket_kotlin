@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             EventCard(
                 imageRes = R.drawable.goblinstyle,
-                eventName = "Мероприятие",
+                eventName = "Крутое название для мероприятия",
                 onLikeClick = {},
                 onDislikeClick = {}
             )
