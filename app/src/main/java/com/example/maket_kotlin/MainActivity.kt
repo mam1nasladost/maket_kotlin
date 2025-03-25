@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,17 +19,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.HttpResponse
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+
+//нужно переписать все по SOLID, используя viewmodel прописать получение и отправку данных,
+//расписать экраны по отдельным компоузабл, еще и как то сделать чтобы ботомбар всегда отображался на каждом экране
+//еще и анимацию проявления карточки надо пофиксить чтобы была красивая тень
 
 
 class MainActivity : ComponentActivity() {
@@ -36,45 +60,134 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EventCard(
-                imageRes = R.drawable.goblinstyle,
-                eventName = "Крутое название для мероприятия",
+                imageRes = null,
+                eventName = "Мероприятие",
                 onLikeClick = {},
                 onDislikeClick = {}
             )
-
         }
     }
 }
 
+data class Event(
+    val id: Int,
+    val imageRes: Int?,
+    val name: String
+)
+
+class BackendClient {
+    private val client = HttpClient(CIO) {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+    }
+    //отправка лайка
+    private val baseUrl = "http://localhost:8080"
+    suspend fun sendLike(eventId: Int):  HttpResponse{
+        return client.post("$baseUrl/like?eventId=$eventId")
+    }
+    //получение событий
+    suspend fun getEvents(): List<Event> {
+        return client.get("$baseUrl/events").body()
+    }
+
+}
+
+//@Serializable
+//data class EventLikeRequest(val eventId: Int)
+//@Serializable
+//data class BackendResponse(val status: String, val message: String)
+
 @Composable
-fun EventCard(
+fun EventCard(      //карточка
     imageRes: Int?,
     eventName: String,
     onLikeClick: () -> Unit,
     onDislikeClick: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    val moveX = remember { Animatable(0f) }
+    val rotation = remember { Animatable(0f) }
+    val transparency = remember { Animatable(1f) }
+    val size = remember { Animatable(1f) }
+
+    fun animateSwipe(toRight: Boolean, onEnd: () -> Unit) {     //метод анимации свайпа
+        scope.launch {
+            val direction = if (toRight) 1f else -1f
+            launch { moveX.animateTo(targetValue = direction * 1500f, animationSpec = tween(500)) }
+            launch { rotation.animateTo(targetValue = direction * 30f, animationSpec = tween(500)) }
+            launch { transparency.animateTo(targetValue = 0f, animationSpec = tween(500)) }
+
+            delay(500)
+
+            moveX.snapTo(0f)
+            rotation.snapTo(0f)
+            transparency.snapTo(0f)
+            size.snapTo(0.8f)
+
+            onEnd()
+            launch { transparency.animateTo(1f, animationSpec = tween(400)) }
+            launch { size.animateTo(1f, animationSpec = tween(400)) }
+        }
+    }
+
+    val swipableState = rememberDraggableState { delta ->   //слушатель жеста свайпа
+        scope.launch {
+            moveX.snapTo(moveX.value + delta)
+            rotation.snapTo(moveX.value/40f)
+        }
+    }
+
     Card(
         modifier = Modifier
-            .padding(all = 32.dp)
-            .padding(bottom = 64.dp, top = 48.dp)
-            .fillMaxSize(),
+            .padding(32.dp)
+            .padding(bottom = 88.dp, top = 32.dp)
+            .fillMaxSize()
+            .graphicsLayer(
+                translationX = moveX.value,
+                rotationZ = rotation.value,
+                alpha = transparency.value,
+                scaleX = size.value,
+                scaleY = size.value
+            )
+            .draggable(
+                state = swipableState,
+                orientation = Orientation.Horizontal,
+                onDragStopped = {
+                    if (moveX.value > 300f) {
+                        animateSwipe(true, onLikeClick)
+                    } else if (moveX.value < -300f) {
+                        animateSwipe(false, onDislikeClick)
+                    } else {
+                        scope.launch {
+                            moveX.animateTo(0f, tween(300))
+                            rotation.animateTo(0f, tween(300))
+                        }
+                    }
+                }
+            ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(8.dp)
+        //elevation = CardDefaults.cardElevation(2.dp) при анимации ломается тень от карточки, нужно фиксить
+
     ) {
         Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
             if (imageRes != null) {
-                Image(
+                Image(              //кажется нужно использовать asyncimage для отображения фотографии по ссылке
                     painter = painterResource(id = imageRes),
                     contentDescription = eventName,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(620.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)),
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Box(
+                Box(                        //затычка для картинки
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(620.dp)
@@ -98,18 +211,22 @@ fun EventCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(onClick = onLikeClick) {
-                    Text("Лайк")
-                }
-                Button(onClick = onDislikeClick, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
+                Button(
+                    onClick = {animateSwipe(false, onLikeClick) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
                     Text("Дизлайк")
+                }
+                Button(
+                    onClick = {animateSwipe(true, onDislikeClick) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+                ) {
+                    Text("Лайк")
                 }
             }
         }
     }
 }
-
-

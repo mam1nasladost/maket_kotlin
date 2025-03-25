@@ -56,8 +56,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation (libs.fuel.v231)
+    implementation (libs.fuel.coroutines)
+    val ktorVersion = "3.1.1" // или самая свежая версия, можно проверить на https://ktor.io
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion") // асинхронный клиент
+    implementation("io.ktor:ktor-client-logging:$ktorVersion") // логирование запросов
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion") // парсинг
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion") // JSON
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2") // сериализация
 }
