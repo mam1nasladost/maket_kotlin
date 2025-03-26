@@ -33,8 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -65,11 +67,12 @@ class MainActivity : ComponentActivity() {
                 onLikeClick = {},
                 onDislikeClick = {}
             )
+            BottomBar()
         }
     }
 }
 
-data class Event(
+data class Event( //дтошка для хранения данных о эвенте
     val id: Int,
     val imageRes: Int?,
     val name: String
@@ -172,7 +175,7 @@ fun EventCard(      //карточка
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        //elevation = CardDefaults.cardElevation(2.dp) при анимации ломается тень от карточки, нужно фиксить
+        elevation = CardDefaults.cardElevation(8.dp) //анимация все еще сломанная нужно фиксить, оно просто красивое
 
     ) {
         Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
@@ -187,7 +190,7 @@ fun EventCard(      //карточка
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Box(                        //затычка для картинки
+                Box(                 //затычка для картинки
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(620.dp)
@@ -215,18 +218,59 @@ fun EventCard(      //карточка
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = {animateSwipe(false, onLikeClick) },
+                    onClick = {animateSwipe(false, onDislikeClick) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
                     Text("Дизлайк")
                 }
                 Button(
-                    onClick = {animateSwipe(true, onDislikeClick) },
+                    onClick = {animateSwipe(true, onLikeClick) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
                 ) {
                     Text("Лайк")
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BottomBar() {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .offset(y = 810.dp)
+            .padding(horizontal = 18.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp))
+            .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp)),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        Alignment.CenterVertically,
+    ){
+    Button(
+        onClick = {},
+        modifier = Modifier.size(40.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        shape = RoundedCornerShape(18.dp)
+        ) { }
+    Button(
+        onClick = {},
+        modifier = Modifier.size(40.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        shape = RoundedCornerShape(18.dp)
+    ) { }
+    Button(onClick = {},
+        modifier = Modifier.size(40.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        shape = RoundedCornerShape(18.dp)
+    ) { }
+    Button(
+        onClick = {},
+        modifier = Modifier.size(40.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+        shape = RoundedCornerShape(18.dp)
+    ) { }
     }
 }
