@@ -58,11 +58,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.fuel.v231)
     implementation (libs.fuel.coroutines)
+    implementation ("androidx.compose.material3:material3:1.3.1")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.8")
     val ktorVersion = "3.1.1" // или самая свежая версия, можно проверить на https://ktor.io
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion") // асинхронный клиент
     implementation("io.ktor:ktor-client-logging:$ktorVersion") // логирование запросов
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion") // парсинг
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion") // JSON
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2") // сериализация
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0") // сериализация
 }

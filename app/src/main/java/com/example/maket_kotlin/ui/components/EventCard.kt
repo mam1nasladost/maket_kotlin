@@ -10,17 +10,13 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,6 +29,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,22 +111,23 @@ fun EventCard(      //карточка
         elevation = CardDefaults.cardElevation(8.dp) //анимация все еще сломанная нужно фиксить, оно просто красивое
 
     ) {
-        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+
             if (imageRes != null) {
-                Image(              //кажется нужно использовать asyncimage для отображения фотографии по ссылке
+                Image(
                     painter = painterResource(id = imageRes),
                     contentDescription = eventName,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(580.dp)
+                        .weight(0.80f) // вес для картинки
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Box(                 //затычка для картинки
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(580.dp)
+                        .weight(0.80f)
                         .background(Color.LightGray)
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                     contentAlignment = Alignment.Center
@@ -138,33 +136,21 @@ fun EventCard(      //карточка
                 }
             }
 
-            Text(
-                text = eventName,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
-
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .weight(0.15f)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Button(
-                    onClick = {animateSwipe(false, onDislikeClick) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
-                ) {
-                    Text("Дизлайк")
-                }
-                Button(
-                    onClick = {animateSwipe(true, onLikeClick) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
-                ) {
-                    Text("Лайк")
-                }
+                Text(
+                    text = eventName,
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
@@ -175,8 +161,9 @@ fun EventCard(      //карточка
 fun PreviewEventCard() {
     EventCard(
         imageRes = null,
-        eventName = "Пример события",
+        eventName = "Пример названия",
         onLikeClick = {},
         onDislikeClick = {}
     )
 }
+

@@ -5,9 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.maket_kotlin.ui.components.BottomBar
 import com.example.maket_kotlin.ui.screens.EventScreen
+import com.example.maket_kotlin.ui.screens.RegistrationScreen
 
 //нужно переписать все по SOLID, используя viewmodel прописать получение и отправку данных,
 //расписать экраны по отдельным компоузабл, настроить перемещение по ним через NavHost,
