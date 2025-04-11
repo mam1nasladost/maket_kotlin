@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class eventshortdto(
     val id: Int,
     val imageRes: Int,
+    val views: Int,
     val title: String,
     val description: String,
     val date: String

@@ -60,6 +60,7 @@ dependencies {
     implementation (libs.fuel.coroutines)
     implementation ("androidx.compose.material3:material3:1.3.1")
     implementation ("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     val ktorVersion = "3.1.1" // или самая свежая версия, можно проверить на https://ktor.io
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion") // асинхронный клиент

@@ -30,29 +30,29 @@ fun BottomBar() {
             .offset(y = 810.dp)
             .padding(horizontal = 18.dp)
             .shadow(8.dp, shape = RoundedCornerShape(16.dp))
-            .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
+            .background(Color.White, shape = RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp)),
         horizontalArrangement = Arrangement.SpaceEvenly,
         Alignment.CenterVertically,
     ){
         Button(onClick = {},
             modifier = Modifier.size(44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
             shape = RoundedCornerShape(18.dp)
         ) { }
         Button(onClick = {},
             modifier = Modifier.size(44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
             shape = RoundedCornerShape(18.dp)
         ) { }
         Button(onClick = {},
             modifier = Modifier.size(44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
             shape = RoundedCornerShape(18.dp)
         ) { }
         Button(onClick = {},
             modifier = Modifier.size(44.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
             shape = RoundedCornerShape(18.dp)
         ) { }
     }

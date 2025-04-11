@@ -10,6 +10,7 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,9 +39,10 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun EventCard(      //карточка
+fun EventCard(
     imageRes: Int?,
     eventName: String,
+    views: Int,
     onLikeClick: () -> Unit,
     onDislikeClick: () -> Unit
 ) {
@@ -50,7 +52,7 @@ fun EventCard(      //карточка
     val transparency = remember { Animatable(1f) }
     val size = remember { Animatable(1f) }
 
-    fun animateSwipe(toRight: Boolean, onEnd: () -> Unit) {     //метод анимации свайпа
+    fun animateSwipe(toRight: Boolean, onEnd: () -> Unit) {
         scope.launch {
             val direction = if (toRight) 1f else -1f
             launch { transitionX.animateTo(targetValue = direction * 1500f, animationSpec = tween(500)) }
@@ -65,13 +67,13 @@ fun EventCard(      //карточка
             transparency.snapTo(0f)
             size.snapTo(0.8f)
 
-            onEnd()
+            onEnd() //вызов появления новой карточки
             launch { transparency.animateTo(1f, animationSpec = tween(400)) }
             launch { size.animateTo(1f, animationSpec = tween(400)) }
         }
     }
 
-    val swipableState = rememberDraggableState { delta ->   //слушатель жеста свайпа
+    val swipableState = rememberDraggableState { delta ->
         scope.launch {
             transitionX.snapTo(transitionX.value + delta)
             rotation.snapTo(transitionX.value/40f)
@@ -151,6 +153,19 @@ fun EventCard(      //карточка
                     textAlign = TextAlign.Left,
                     modifier = Modifier.fillMaxWidth()
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "Просмотры: $views",
+                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Thin,
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                    )
+                }
+
             }
         }
     }
@@ -162,6 +177,7 @@ fun PreviewEventCard() {
     EventCard(
         imageRes = null,
         eventName = "Пример названия",
+        views = 1332,
         onLikeClick = {},
         onDislikeClick = {}
     )

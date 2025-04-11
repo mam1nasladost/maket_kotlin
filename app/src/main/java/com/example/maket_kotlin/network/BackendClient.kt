@@ -1,8 +1,7 @@
-package com.example.maket_kotlin.client
+package com.example.maket_kotlin.network
 
-import android.app.usage.UsageEvents.Event
+import com.example.maket_kotlin.data.dto.eventshortdto
 import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -23,14 +22,22 @@ class BackendClient {
         }
     }
 
+    val header = "X-что то там" //хедер для мобайл запросов
+
     //отправка лайка
     private val baseUrl = "http://localhost:8080"
     suspend fun sendLike(eventId: Int): HttpResponse {
+
         return client.post("$baseUrl/like?eventId=$eventId")
     }
     //получение событий
-    suspend fun getEvents(): List<Event> {
+    suspend fun getEvents(): List<eventshortdto> {
         return client.get("$baseUrl/events").body()
+    }
+
+    suspend fun register () : HttpResponse {
+        //client.post("$baseUrl/registration).body()"
+        return TODO("Provide the return value")
     }
 
 }

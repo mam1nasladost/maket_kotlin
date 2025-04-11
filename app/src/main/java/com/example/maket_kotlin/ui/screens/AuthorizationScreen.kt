@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -38,7 +39,7 @@ fun RegistrationScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Регистрация", style = MaterialTheme.typography.headlineMedium)
+        Text("Регистрация", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold,)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -53,6 +54,7 @@ fun RegistrationScreen(
             Column(
                 modifier = Modifier
                     .padding(16.dp)
+
             ) {
                 OutlinedTextField(
                     value = login,
