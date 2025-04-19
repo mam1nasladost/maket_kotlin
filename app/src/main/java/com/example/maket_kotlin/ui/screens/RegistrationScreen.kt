@@ -14,22 +14,33 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.maket_kotlin.data.dto.RegistrationState
+import com.example.maket_kotlin.ui.navigation.AppNavHost
+import com.example.maket_kotlin.viewmodel.RegistrationViewModel
 
 @Composable
 fun RegistrationScreen(
-    onRegisterClick: () -> Unit,
+    navController: NavController,
     onLoginClick: () -> Unit
 ) {
+    val viewModel: RegistrationViewModel = viewModel()
+    val registrationState by viewModel.registrationState.collectAsState()
+
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
-
     val passwordsMatch = password == confirmPassword && password.isNotEmpty() && confirmPassword.isNotEmpty()
 
     Column(
@@ -45,7 +56,7 @@ fun RegistrationScreen(
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFF0F0F0) // Светло-серый фон
+                containerColor = Color(0xFFF0F0F0)
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,6 +67,30 @@ fun RegistrationScreen(
                     .padding(16.dp)
 
             ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Имя") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
+                )
+
+                OutlinedTextField(
+                    value = surname,
+                    onValueChange = { surname = it },
+                    label = { Text("Фамилия") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
+                )
+
                 OutlinedTextField(
                     value = login,
                     onValueChange = { login = it },
@@ -112,14 +147,14 @@ fun RegistrationScreen(
 
                 if (passwordsMatch) {
                     Text(
-                        text = "Пароли совпадают ✅",
-                        color = Color.Green,
+                        text = "    Пароли совпадают ✅",
+                        color = Color.DarkGray,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 } else if (confirmPassword.isNotEmpty() && password.isNotEmpty()) {
                     Text(
-                        text = "Пароли не совпадают ❌",
-                        color = Color.Red,
+                        text = "    Пароли не совпадают ❌",
+                        color = Color.Black,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -129,11 +164,32 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = onRegisterClick,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            onClick = {viewModel.register(login, password, name, surname)},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
             enabled = login.isNotEmpty() && password.isNotEmpty() && passwordsMatch
         ) {
             Text("Зарегистрироваться")
+        }
+
+        when (registrationState) {
+            is RegistrationState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+            }
+            is RegistrationState.Success -> {
+                Text("Регистрация успешна ✅", color = Color.Green, modifier = Modifier.padding(top = 16.dp))
+                LaunchedEffect(Unit) {
+                    navController.navigate("auth") {
+                        popUpTo("auth") { inclusive = true }
+                    }
+                }
+            }
+            is RegistrationState.Error -> {
+                val errorMsg = (registrationState as RegistrationState.Error).message
+                Text("Ошибка: $errorMsg", color = Color.Red, modifier = Modifier.padding(top = 16.dp))
+            }
+            else -> {}
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -146,9 +202,9 @@ fun RegistrationScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun RegistrationScreenPreview() {
+fun RegScreenPreview() {
     RegistrationScreen(
-        onRegisterClick = {},
+        navController = rememberNavController(),
         onLoginClick = {}
     )
 }

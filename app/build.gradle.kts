@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "1.9.10" // или твоя версия Kotlin
+
 }
 
 android {
@@ -58,14 +60,20 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.fuel.v231)
     implementation (libs.fuel.coroutines)
+    implementation ("androidx.navigation:navigation-compose:2.8.9")
+    implementation("io.ktor:ktor-serialization-gson:3.1.1") //
     implementation ("androidx.compose.material3:material3:1.3.1")
     implementation ("androidx.compose.material:material-icons-extended:1.7.8")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    val ktorVersion = "3.1.1" // или самая свежая версия, можно проверить на https://ktor.io
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion") // асинхронный клиент
-    implementation("io.ktor:ktor-client-logging:$ktorVersion") // логирование запросов
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion") // парсинг
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion") // JSON
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0") // сериализация
+    implementation("io.ktor:ktor-client-core:3.1.1")
+    implementation("io.ktor:ktor-client-cio:3.1.1") // асинхронный клиент
+    implementation("io.ktor:ktor-client-logging:3.1.1") // логирование запросов
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("io.ktor:ktor-client-content-negotiation:3.1.1")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.1")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation ("com.google.code.gson:gson:2.13.0")
 }

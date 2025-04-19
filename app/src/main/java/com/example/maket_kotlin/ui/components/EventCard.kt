@@ -2,49 +2,49 @@ package com.example.maket_kotlin.ui.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun EventCard(
-    imageRes: Int?,
+    imageRes: String,
     eventName: String,
     views: Int,
     onLikeClick: () -> Unit,
-    onDislikeClick: () -> Unit
+    onDislikeClick: () -> Unit,
+    onDetailsClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val transitionX = remember { Animatable(0f) }
@@ -114,34 +114,18 @@ fun EventCard(
 
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-
-            if (imageRes != null) {
-                Image(
-                    painter = painterResource(id = imageRes),
-                    contentDescription = eventName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.80f) // вес для картинки
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.80f)
-                        .background(Color.LightGray)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Заглушка изображения", color = Color.DarkGray)
-                }
-            }
-
+            AsyncImage(
+                model = imageRes,
+                contentDescription = eventName,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(5f)
+            )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.15f)
+                    .weight(1f)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -153,6 +137,10 @@ fun EventCard(
                     textAlign = TextAlign.Left,
                     modifier = Modifier.fillMaxWidth()
                 )
+                IconButton(onClick = onDetailsClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = "Открыть доп.информациб")}
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End) {
@@ -170,16 +158,3 @@ fun EventCard(
         }
     }
 }
-
-@Preview(showBackground = true, name = "Превью карточки")
-@Composable
-fun PreviewEventCard() {
-    EventCard(
-        imageRes = null,
-        eventName = "Пример названия",
-        views = 1332,
-        onLikeClick = {},
-        onDislikeClick = {}
-    )
-}
-

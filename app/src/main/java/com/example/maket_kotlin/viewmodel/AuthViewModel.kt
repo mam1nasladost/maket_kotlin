@@ -1,0 +1,27 @@
+package com.example.maket_kotlin.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.maket_kotlin.data.dto.AuthRequest
+import kotlinx.coroutines.launch
+import com.example.maket_kotlin.data.dto.RegistrationState
+import com.example.maket_kotlin.service.AuthService
+import com.example.maket_kotlin.service.AuthServiceImp
+import kotlinx.coroutines.flow.StateFlow
+
+
+class AuthViewModel(
+    private val AuthService: AuthService = AuthServiceImp()
+) : ViewModel() {
+
+    val registrationState: StateFlow<RegistrationState> = AuthService.authState
+
+    fun auth(login: String, password: String) {
+        val request = AuthRequest(login = login, password = password)
+
+        viewModelScope.launch {
+            AuthService.authUser(request)
+        }
+    }
+}
+
