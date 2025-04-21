@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.maket_kotlin.data.dto.RegistrationState
-import com.example.maket_kotlin.ui.navigation.AppNavHost
 import com.example.maket_kotlin.viewmodel.RegistrationViewModel
 
 @Composable
@@ -37,6 +35,7 @@ fun RegistrationScreen(
     var password by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
+    var groupName by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
     var passwordVisible by remember { mutableStateOf(false) }
@@ -83,6 +82,18 @@ fun RegistrationScreen(
                     value = surname,
                     onValueChange = { surname = it },
                     label = { Text("Фамилия") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
+                )
+
+                OutlinedTextField(
+                    value = groupName,
+                    onValueChange = { groupName = it },
+                    label = { Text("Группа") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(
@@ -164,7 +175,7 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {viewModel.register(login, password, name, surname)},
+            onClick = {viewModel.register(login, password, name, surname, groupName)},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),

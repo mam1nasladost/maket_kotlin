@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.maket_kotlin.viewmodel.AuthViewModel
-import com.example.maket_kotlin.viewmodel.RegistrationViewModel
 
 @Composable
 fun LoginScreen(

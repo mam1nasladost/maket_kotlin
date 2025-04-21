@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +23,20 @@ import com.example.maket_kotlin.ui.components.BottomBar
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
+    val token = TokenRepository.tokenFlow.collectAsState().value
+
+    LaunchedEffect(token) {
+        if (token == null) {
+            navController.navigate("auth") {
+                popUpTo(0) { inclusive = true }
+            }
+        } else {
+            navController.navigate("home") {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
 
     Scaffold(
         bottomBar = {
@@ -31,7 +47,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = checkToken(),
+            startDestination = if (token == null) "auth" else "home",
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) },
@@ -62,21 +78,17 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 )
             }
 
-            composable("events") {
-                EventScreen()
+            composable("compilation") {
+                EventCollectionsScreen()
             }
 
             composable("home") {
+                EventScreen()
+            }
+
+            composable("profile") {
+                ProfileScreen()
             }
         }
     }
-}
-
-fun checkToken(): String {
-    Log.e("Получили токен:", "${TokenRepository.token.toString()}")
-    if (TokenRepository.token == null) {
-        return "auth"
-        }
-    else
-        return "events"
 }

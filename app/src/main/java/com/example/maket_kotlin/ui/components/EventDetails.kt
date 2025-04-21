@@ -3,6 +3,7 @@ package com.example.maket_kotlin
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -16,10 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.maket_kotlin.data.dto.EventShortDto
 import kotlinx.coroutines.launch
 
@@ -59,7 +58,7 @@ fun EventDetails(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(18.dp)
+            .padding(28.dp)
             .graphicsLayer {
                 alpha = transparency.value
                 scaleX = scale.value
@@ -67,66 +66,61 @@ fun EventDetails(
             },
         shape = RoundedCornerShape(16.dp),
     ) {
+        
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            AsyncImage(
-                model = event.imageUrl,
-                contentDescription = event.description,
-                contentScale = ContentScale.Crop,
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = event.title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(4f)
+                    .padding(horizontal = 16.dp)
+                    
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = event.description,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp),
+            ) {
                 Text(
-                    text = event.title,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
+                    text = "Дата: ${event.date}",
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .weight(1f)
                 )
+            }
 
-                Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = event.description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .weight(1f)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp) // Добавили отступ снизу для стрелки
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Absolute.Right) {
+                IconButton(
+                    onClick = ::animateDisappear,
+                    modifier = Modifier.size(36.dp).offset(x = (-16).dp)
                 ) {
-                    Text(
-                        text = "Дата: ${event.date}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.weight(1f)
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Закрыть",
+                        modifier = Modifier.size(24.dp)
                     )
-
-                    IconButton(
-                        onClick = ::animateDisappear,
-                        modifier = Modifier.size(36.dp) // Фиксированный размер для кнопки
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Закрыть",
-                            modifier = Modifier.size(24.dp) // Размер иконки
-                        )
-                    }
                 }
             }
         }

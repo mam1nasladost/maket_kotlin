@@ -5,15 +5,17 @@ import com.google.gson.annotations.SerializedName
 data class EventShortDto(
     @SerializedName("id")
     val id: Int,
-    @SerializedName("imageUrl")
-    val imageUrl: String,
-    @SerializedName("views")
-    val views: Int,
     @SerializedName("title")
     val title: String,
-    @SerializedName("description")
+    @SerializedName("views")
+    val views: Int,
+    @SerializedName("eventDate")
+    val date: String,
+    @SerializedName("imageUrl")
+    val imageUrl: String,
+    @SerializedName("annotation")
     val description: String,
-    @SerializedName("date")
-    val date: String
+    @SerializedName("imageDescription")
+    val imageDescription: String?
 )
 

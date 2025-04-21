@@ -1,4 +1,5 @@
-import androidx.compose.foundation.Image
+package com.example.maket_kotlin.ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,18 +10,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.shape.RoundedCornerShape
 import coil.compose.AsyncImage
 import com.example.maket_kotlin.EventDetails
-import com.example.maket_kotlin.data.dto.EventCollectionsDto
+import com.example.maket_kotlin.data.dto.EventCollectionDto
 import com.example.maket_kotlin.data.dto.EventShortDto
 
 @Composable
 fun EventCollections(
-    collections: List<EventCollectionsDto>
+    collections: List<EventCollectionDto>
 ) {
     var selectedEvent by remember { mutableStateOf<EventShortDto?>(null) }
 
@@ -33,7 +33,7 @@ fun EventCollections(
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                 )
                 LazyRow(modifier = Modifier.padding(vertical = 8.dp)) {
-                    items(collection.collections) { event ->
+                    items(collection.events) { event ->
                         EventCardFromCollections(event = event) {
                             selectedEvent = event
                         }
@@ -41,7 +41,6 @@ fun EventCollections(
                 }
             }
         }
-
         selectedEvent?.let { event ->
             Box(
                 modifier = Modifier

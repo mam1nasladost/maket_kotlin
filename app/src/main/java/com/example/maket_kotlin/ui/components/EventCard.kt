@@ -11,9 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,25 +22,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun EventCard(
     imageRes: String,
+    imageDescription: String?,
     eventName: String,
     views: Int,
     onLikeClick: () -> Unit,
@@ -51,15 +56,15 @@ fun EventCard(
     val rotation = remember { Animatable(0f) }
     val transparency = remember { Animatable(1f) }
     val size = remember { Animatable(1f) }
+    val showImage = remember { mutableStateOf(true) }
 
+    // Функция для анимации свайпа
     fun animateSwipe(toRight: Boolean, onEnd: () -> Unit) {
         scope.launch {
             val direction = if (toRight) 1f else -1f
             launch { transitionX.animateTo(targetValue = direction * 1500f, animationSpec = tween(500)) }
             launch { rotation.animateTo(targetValue = direction * 30f, animationSpec = tween(500)) }
             launch { transparency.animateTo(targetValue = 0f, animationSpec = tween(500)) }
-
-
             delay(500)
 
             transitionX.snapTo(0f)
@@ -67,7 +72,7 @@ fun EventCard(
             transparency.snapTo(0f)
             size.snapTo(0.8f)
 
-            onEnd() //вызов появления новой карточки
+            onEnd()
             launch { transparency.animateTo(1f, animationSpec = tween(400)) }
             launch { size.animateTo(1f, animationSpec = tween(400)) }
         }
@@ -76,7 +81,7 @@ fun EventCard(
     val swipableState = rememberDraggableState { delta ->
         scope.launch {
             transitionX.snapTo(transitionX.value + delta)
-            rotation.snapTo(transitionX.value/40f)
+            rotation.snapTo(transitionX.value / 40f)
         }
     }
 
@@ -109,19 +114,50 @@ fun EventCard(
                 }
             ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(8.dp) //анимация все еще сломанная нужно фиксить, оно просто красивое
-
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = imageRes,
-                contentDescription = eventName,
-                contentScale = ContentScale.Crop,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(5f)
-            )
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                TextButton(onClick = { showImage.value = !showImage.value }) {
+                    Text(text = if (showImage.value) "Показать описание" else "Показать изображение")
+                }
+            }
+
+            if (showImage.value) {
+                AsyncImage(
+                    model = imageRes,
+                    contentDescription = eventName,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(5f)
+                )
+            } else {
+                // Используем verticalScroll, чтобы сделать описание листаемым
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(5f)
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()) // добавляем прокрутку
+                ) {
+                    Text(
+                        text = imageDescription.orEmpty(),
+                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Normal,
+                        overflow = TextOverflow.Clip,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -137,13 +173,20 @@ fun EventCard(
                     textAlign = TextAlign.Left,
                     modifier = Modifier.fillMaxWidth()
                 )
-                IconButton(onClick = onDetailsClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Открыть доп.информациб")}
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End) {
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(onClick = onDetailsClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = "Открыть доп.информацию"
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Text(
                         text = "Просмотры: $views",
                         fontSize = 12.sp,
@@ -153,7 +196,6 @@ fun EventCard(
                         modifier = Modifier
                     )
                 }
-
             }
         }
     }

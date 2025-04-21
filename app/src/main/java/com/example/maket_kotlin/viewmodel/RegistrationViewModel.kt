@@ -16,8 +16,8 @@ class RegistrationViewModel(
 
     val registrationState: StateFlow<RegistrationState> = registerService.registrationState
 
-    fun register(login: String, password: String, name: String, surname: String) {
-        val request = RegisterRequest(login = login, password = password, name = name, surname = surname, groupName = "")
+    fun register(login: String, password: String, name: String, surname: String, groupName: String) {
+        val request = RegisterRequest(login = login, password = password, name = name, surname = surname, groupName = groupName)
 
         viewModelScope.launch {
             registerService.registerUser(request)

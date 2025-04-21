@@ -2,6 +2,7 @@ package com.example.maket_kotlin.network
 
 import android.util.Log
 import com.example.maket_kotlin.data.dto.AuthRequest
+import com.example.maket_kotlin.data.dto.EventCollectionDto
 import com.example.maket_kotlin.data.dto.EventShortDto
 import com.example.maket_kotlin.data.dto.RegisterRequest
 import io.ktor.client.HttpClient
@@ -20,6 +21,7 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.gson.gson
 import com.example.maket_kotlin.data.dto.TokenRepository
+import com.example.maket_kotlin.data.dto.UserResponse
 import io.ktor.http.isSuccess
 
 class BackendClient() {
@@ -57,13 +59,35 @@ class BackendClient() {
         return eventList
     }
 
+    suspend fun getUserInfo(): UserResponse {
+        val token = TokenRepository.token
+        Log.e("Authorization", "Bearer $token")
+
+        val response = client.get("$baseUrl/api/users") {
+            header("Authorization", "Bearer Bearer $token")
+        }
+
+        return response.body()
+    }
+
+    suspend fun getCollections(): List<EventCollectionDto> {
+        val token = TokenRepository.token
+        Log.e("Authorization", "Bearer $token")
+
+        val response = client.get("$baseUrl/api/compilations") {
+            header("Authorization", "Bearer Bearer $token")
+        }
+
+        return response.body()
+    }
+
     suspend fun auth(request: AuthRequest): HttpResponse {
         val response = client.post("$baseUrl/api/auth/sign-in") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
         if (response.status.isSuccess()) {
-            TokenRepository.token = response.bodyAsText() // сохраняем токен
+            TokenRepository.token = response.bodyAsText()
         }
         return response
     }
@@ -74,5 +98,4 @@ class BackendClient() {
             setBody(request)
         }
     }
-
 }

@@ -13,9 +13,11 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import com.example.maket_kotlin.data.dto.EventShortDto
 import com.example.maket_kotlin.ui.components.EventCard
 import com.example.maket_kotlin.viewmodel.EventViewModel
@@ -61,6 +63,7 @@ fun EventScreen() {
                     imageRes = currentCard.imageUrl,
                     eventName = currentCard.title,
                     views = currentCard.views,
+                    imageDescription = currentCard.imageDescription,
                     onLikeClick = {
                         viewModel.sendLike(currentCard.id)
                         viewModel.updateIndex((currentIndex + 1) % cards.size)
@@ -74,6 +77,10 @@ fun EventScreen() {
                 )
             }
         }
+        else
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
 
         selectedEvent?.let { event ->
             Box(
