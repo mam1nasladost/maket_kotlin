@@ -43,10 +43,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun EventCard(
-    imageRes: String,
+    imageRes: String?,
     imageDescription: String?,
     eventName: String,
-    views: Int,
     onLikeClick: () -> Unit,
     onDislikeClick: () -> Unit,
     onDetailsClick: () -> Unit
@@ -127,16 +126,26 @@ fun EventCard(
                     Text(text = if (showImage.value) "Показать описание" else "Показать изображение")
                 }
             }
-
             if (showImage.value) {
+                if (imageRes != null) {
+                    AsyncImage(
+                        model = imageRes,
+                        contentDescription = eventName,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(5f)
+                    )
+                }
+                else {
                 AsyncImage(
-                    model = imageRes,
+                    model = "https://placehold.co/720x360",
                     contentDescription = eventName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(5f)
-                )
+                )}
             } else {
                 // Используем verticalScroll, чтобы сделать описание листаемым
                 Column(
@@ -183,18 +192,6 @@ fun EventCard(
                             contentDescription = "Открыть доп.информацию"
                         )
                     }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = "Просмотры: $views",
-                        fontSize = 12.sp,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Thin,
-                        textAlign = TextAlign.Left,
-                        modifier = Modifier
-                    )
                 }
             }
         }

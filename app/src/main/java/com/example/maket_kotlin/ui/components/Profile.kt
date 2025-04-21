@@ -1,12 +1,8 @@
 package com.example.maket_kotlin.ui.components
 
-import android.R.attr.fontStyle
-import android.R.attr.fontWeight
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,7 +54,7 @@ fun Profile(
 
         Text(text = "Скоро здесь будет список понравившихся мероприятий!", fontSize = 24.sp, textAlign = TextAlign.Center)
 
-        Spacer(modifier = Modifier.height(264.dp))
+        Spacer(modifier = Modifier.height(132.dp))
 
         TextButton(onClick = {TokenRepository.token = null}, ) { Text(text = "Выйти из аккаунта?", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold) }
     }

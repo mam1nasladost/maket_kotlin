@@ -16,6 +16,8 @@ data class EventShortDto(
     @SerializedName("annotation")
     val description: String,
     @SerializedName("imageDescription")
-    val imageDescription: String?
+    val imageDescription: String?,
+    @SerializedName("location")
+    val location: String
 )
 

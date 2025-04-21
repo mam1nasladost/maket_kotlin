@@ -62,7 +62,6 @@ fun EventScreen() {
                 EventCard(
                     imageRes = currentCard.imageUrl,
                     eventName = currentCard.title,
-                    views = currentCard.views,
                     imageDescription = currentCard.imageDescription,
                     onLikeClick = {
                         viewModel.sendLike(currentCard.id)

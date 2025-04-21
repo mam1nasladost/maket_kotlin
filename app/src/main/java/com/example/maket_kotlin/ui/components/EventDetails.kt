@@ -95,8 +95,17 @@ fun EventDetails(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+            Row(modifier = Modifier.padding(horizontal = 16.dp)){
+                Text(
+                    text = "Место проведения: ${event.location}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                )
+            }
 
-            Row(
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -104,6 +113,11 @@ fun EventDetails(
             ) {
                 Text(
                     text = "Дата: ${event.date}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                )
+                Text(
+                    text = "Просмотры: ${event.views}",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                 )
