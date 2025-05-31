@@ -3,6 +3,7 @@ package com.example.maket_kotlin.network
 import android.util.Log
 import com.example.maket_kotlin.data.dto.AuthRequest
 import com.example.maket_kotlin.data.dto.EventCollectionDto
+import com.example.maket_kotlin.data.dto.EventRequestDto
 import com.example.maket_kotlin.data.dto.EventShortDto
 import com.example.maket_kotlin.data.dto.RegisterRequest
 import io.ktor.client.HttpClient
@@ -21,7 +22,9 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.gson.gson
 import com.example.maket_kotlin.data.dto.TokenRepository
+import com.example.maket_kotlin.data.dto.UpdateUserRequest
 import com.example.maket_kotlin.data.dto.UserResponse
+import io.ktor.client.request.patch
 import io.ktor.http.isSuccess
 
 class BackendClient() {
@@ -39,7 +42,7 @@ class BackendClient() {
         }
     }
 
-    private val baseUrl = "http://37.9.4.22:8080"
+    private val baseUrl = "http://10.0.2.2:8080"
 
     suspend fun sendLike(eventId: Int): HttpResponse {
         return client.post("$baseUrl/api/requests?eventId=$eventId")
@@ -47,7 +50,6 @@ class BackendClient() {
 
     suspend fun getEvents(): List<EventShortDto> {
         val token = TokenRepository.token
-        Log.e("Authorization", "Bearer $token")
 
         val response = client.get("$baseUrl/api/events") {
             header("Authorization", "Bearer Bearer $token")
@@ -61,7 +63,6 @@ class BackendClient() {
 
     suspend fun getUserInfo(): UserResponse {
         val token = TokenRepository.token
-        Log.e("Authorization", "Bearer $token")
 
         val response = client.get("$baseUrl/api/users") {
             header("Authorization", "Bearer Bearer $token")
@@ -70,9 +71,45 @@ class BackendClient() {
         return response.body()
     }
 
+    suspend fun getUserEventsId(): List<EventRequestDto> {
+        val token = TokenRepository.token
+
+        val response = client.get("$baseUrl/api/requests") {
+            header("Authorization", "Bearer Bearer $token")
+        }
+
+        Log.d("BackendClient", "Received user event IDs: ${response.bodyAsText()}")
+
+        val result = response.body<List<EventRequestDto>>()
+
+        return result
+
+    }
+
+    suspend fun getEventById(id: Int): EventShortDto {
+        val token = TokenRepository.token
+
+        val response = client.get("$baseUrl/api/events/$id") {
+            header("Authorization", "Bearer Bearer $token")
+        }
+
+        return response.body<EventShortDto>()
+    }
+
+    suspend fun updateUserInfo(request: UpdateUserRequest): HttpResponse {
+        val token = TokenRepository.token
+
+        val response = client.patch("$baseUrl/api/users") {
+            header("Authorization", "Bearer Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }
+
+        return response.body()
+    }
+
     suspend fun getCollections(): List<EventCollectionDto> {
         val token = TokenRepository.token
-        Log.e("Authorization", "Bearer $token")
 
         val response = client.get("$baseUrl/api/compilations") {
             header("Authorization", "Bearer Bearer $token")

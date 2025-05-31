@@ -1,4 +1,4 @@
-package com.example.maket_kotlin
+package com.example.maket_kotlin.ui.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -58,7 +58,7 @@ fun EventDetails(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(28.dp)
+            .padding(top = 64.dp, bottom = 106.dp, start = 20.dp, end = 20.dp)
             .graphicsLayer {
                 alpha = transparency.value
                 scaleX = scale.value
@@ -93,15 +93,6 @@ fun EventDetails(
                     .padding(horizontal = 16.dp)
                     
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.padding(horizontal = 16.dp)){
-                Text(
-                    text = "Место проведения: ${event.location}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                )
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

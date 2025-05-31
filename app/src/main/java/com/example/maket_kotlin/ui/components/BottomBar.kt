@@ -35,9 +35,7 @@ fun BottomBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .offset(y = (-22).dp)
-            .padding(horizontal = 18.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .padding(horizontal = 18.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {

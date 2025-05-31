@@ -11,16 +11,15 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 class AuthViewModel(
-    private val AuthService: AuthService = AuthServiceImp()
-) : ViewModel() {
+    private val authService: AuthService = AuthServiceImp()) : ViewModel() {
 
-    val registrationState: StateFlow<RegistrationState> = AuthService.authState
+    val registrationState: StateFlow<RegistrationState> = authService.authState
 
     fun auth(login: String, password: String) {
         val request = AuthRequest(login = login, password = password)
 
         viewModelScope.launch {
-            AuthService.authUser(request)
+            authService.authUser(request)
         }
     }
 }

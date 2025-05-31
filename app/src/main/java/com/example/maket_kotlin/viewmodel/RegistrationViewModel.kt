@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 class RegistrationViewModel(
-    private val registerService: RegisterService = RegisterServiceImp()
-) : ViewModel() {
+    private val registerService: RegisterService = RegisterServiceImp()) : ViewModel() {
 
     val registrationState: StateFlow<RegistrationState> = registerService.registrationState
 

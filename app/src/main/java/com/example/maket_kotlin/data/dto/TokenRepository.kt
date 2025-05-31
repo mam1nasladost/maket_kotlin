@@ -13,7 +13,7 @@ object TokenRepository {
     fun init(context: Context) {
         if (!::sharedPreferences.isInitialized) {
             sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-            _tokenFlow.value = token // инициализируем текущим значением
+            _tokenFlow.value = token
         }
     }
 
@@ -21,6 +21,6 @@ object TokenRepository {
         get() = sharedPreferences.getString("TOKEN", null)
         set(value) {
             sharedPreferences.edit().putString("TOKEN", value).apply()
-            _tokenFlow.value = value // уведомляем, что токен изменился
+            _tokenFlow.value = value
         }
 }
